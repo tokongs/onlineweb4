@@ -265,6 +265,7 @@ INSTALLED_APPS = (
     'apps.mailinglists',
     'apps.inventory',
     'apps.payment',
+    'apps.photoalbum',
     'apps.posters',
     #'apps.rutinator',
     'apps.slack',
