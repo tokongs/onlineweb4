@@ -5,7 +5,6 @@ import sys
 import dj_database_url
 from decouple import config
 from django.contrib.messages import constants as messages
-from webpack_resolve import create_resolve_file
 
 # Directory that contains this file.
 PROJECT_SETTINGS_DIRECTORY = os.path.dirname(globals()['__file__'])
@@ -43,6 +42,7 @@ EMAIL_EKSKOM = 'ekskom@online.ntnu.no'
 EMAIL_FAGKOM = 'fagkom@online.ntnu.no'
 EMAIL_HS = 'hs@online.ntnu.no'
 EMAIL_ITEX = 'itex@online.ntnu.no'
+EMAIL_OPPTAK='opptak@online.ntnu.no'
 EMAIL_PROKOM = 'prokom@online.ntnu.no'
 EMAIL_TRIKOM = 'trikom@online.ntnu.no'
 
@@ -444,16 +444,31 @@ OW4_SETTINGS = {
 APPROVAL_SETTINGS = {
     'SEND_APPLICANT_NOTIFICATION_EMAIL': True,
     'SEND_APPROVER_NOTIFICATION_EMAIL': True,
+    'SEND_COMMITTEEAPPLICATION_APPLICANT_EMAIL': config('OW4_APPROVAL_SEND_COMMITTEEAPPLICATION_APPLICANT_EMAIL',
+                                                        default=False, cast=bool),
 }
 
 OW4_GSUITE_CREDENTIALS_FILENAME = config('OW4_GSUITE_CREDENTIALS_FILENAME', default='gsuitecredentials.json')
 OW4_GSUITE_CREDENTIALS_PATH = config('OW4_GSUITE_CREDENTIALS_PATH',
                                      default=os.path.join(PROJECT_ROOT_DIRECTORY, OW4_GSUITE_CREDENTIALS_FILENAME))
-OW4_GSUITE_SYNC = {
+
+OW4_GSUITE_SETTINGS = {
     'CREDENTIALS': OW4_GSUITE_CREDENTIALS_PATH,
     'DOMAIN': config('OW4_GSUITE_SYNC_DOMAIN', default='online.ntnu.no'),
     # DELEGATED_ACCOUNT: G Suite Account with proper permissions to perform insertions and removals.
-    'DELEGATED_ACCOUNT': config('OW4_GSUITE_SYNC_DELEGATED_ACCOUNT', default=''),
+    'DELEGATED_ACCOUNT': config('OW4_GSUITE_DELEGATED_ACCOUNT', default=''),
+    'ENABLED': config('OW4_GSUITE_ENABLED', cast=bool, default=False),
+}
+
+OW4_GSUITE_ACCOUNTS = {
+    'ENABLED': config('OW4_GSUITE_ACCOUNTS_ENABLED', cast=bool, default=False),
+    'ENABLE_INSERT': config('OW4_GSUITE_ACCOUNTS_ENABLE_INSERT', cast=bool, default=False),
+}
+
+OW4_GSUITE_SYNC = {
+    'CREDENTIALS': OW4_GSUITE_SETTINGS.get('CREDENTIALS'),
+    'DOMAIN': OW4_GSUITE_SETTINGS.get('DOMAIN'),
+    'DELEGATED_ACCOUNT': OW4_GSUITE_SETTINGS.get('DELEGATED_ACCOUNT'),
     'ENABLED': config('OW4_GSUITE_SYNC_ENABLED', cast=bool, default=False),
     'ENABLE_INSERT': config('OW4_GSUITE_SYNC_ENABLE_INSERT', cast=bool, default=False),
     'ENABLE_DELETE': config('OW4_GSUITE_SYNC_ENABLE_DELETE', cast=bool, default=False),
@@ -505,7 +520,3 @@ for settings_module in ['filebrowser', 'django_wiki', 'local']:  # local last
         exec('from .%s import *' % settings_module)
     except ImportError as e:
         print("Could not import settings for '%s' : %s" % (settings_module, str(e)))
-
-if DEBUG:
-    # Create webpack-extra-resolve.json
-    create_resolve_file()
