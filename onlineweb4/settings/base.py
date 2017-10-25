@@ -127,7 +127,7 @@ TEMPLATES = [
                 "onlineweb4.context_processors.context_settings",
                 "onlineweb4.context_processors.feedback_notifier",
             ],
-            'debug': DEBUG,
+            'debug': True,
         }
     }
 ]
