@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.views.generic import TemplateView
 from django_js_reverse.views import urls_js
 from django_nyt.urls import get_pattern as get_notify_pattern
-from wiki.urls import get_pattern as get_wiki_pattern
 from onlineweb4 import views
+from wiki.urls import get_pattern as get_wiki_pattern
 
 # URL config
 admin.autodiscover()
@@ -80,6 +80,11 @@ if 'apps.companyprofile' in settings.INSTALLED_APPS:
     urlpatterns += [
         url(r'^company/',           include('apps.companyprofile.urls')),
         url(r'^dashboard/company/', include('apps.companyprofile.dashboard.urls')),
+    ]
+
+if 'apps.contact' in settings.INSTALLED_APPS:
+    urlpatterns += [
+        url(r'^contact/', include('apps.contact.urls')),
     ]
 
 if 'apps.dashboard' in settings.INSTALLED_APPS:
