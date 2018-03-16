@@ -3,7 +3,7 @@ import $ from 'jquery'
 import './less/photoalbum.less'
 
 $(document).ready(() => {
-  console.log('Running script')
+  console.log('Running the script')
   $('.photo_edit').click(function choose_photo (e) {
 		const photo = $(this)
 		photo.toggleClass('chosen')
@@ -17,17 +17,19 @@ $(document).ready(() => {
 		document.getElementById('report_photo_form').style["visibility"] = "visible"
   })
 
-  $(".photo .big").bind("keydown", function(e) {
-  	console.log("Running on keydown")
-    if (e.keyCode == 37) { // Left
-      console.log("Left arrow")
-    }
-    if (e.keyCode == 39) { // Right arrow
-      console.log("Right arrow")
+  $(document).keydown(function(event) {
+    if (event.key == "ArrowLeft") {
+        var previousPhotoUrl = document.getElementById('previous_photo_url').href;
+        window.location.replace(previousPhotoUrl);
+    } else if (event.key == "ArrowRight") {
+      var nextPhotoUrl = document.getElementById('next_photo_url').href;
+      window.location.replace(nextPhotoUrl);
     }
   })
 
 })
+
+
 
 
 
