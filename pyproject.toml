@@ -1,0 +1,132 @@
+[tool.poetry]
+name = "onlineweb4"
+version = "1.0.0"
+description = "Web pages for Online, Linjeforeningen for Informatikk at NTNU"
+authors = ["Dotkom <dotkom@online.ntnu.no>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+Django = "^2.1.*"
+djangorestframework = "^3.9"
+django-filter = "^2.1"
+pillow = "^6.0"
+markdown2 = "^2.3"
+python-memcached = "^1.59"
+stripe = "^2.29"
+icalendar = "^4.0"
+google-api-python-client = "^1.7"
+celery = "^4.3"
+django-filebrowser = "^3.11"
+django-chunks = { git = "https://github.com/dotKom/django-chunks.git", branch = "django19-support" }
+django-crispy-forms = "^1.7"
+django-extensions = "^2.1"
+django-dynamic-fixture = "^2.0"
+django-recaptcha = "^2.0"           # Google ReCaptcha
+django-oauth-toolkit = "^1.2"       # OAuth2 authentication support
+django-watson = "^1.5.2"            # Indexed model search lib
+django-reversion = "^3.0"           # Model version history with middleware hooks to all post_save signals
+django-guardian = "^1.5"            # Per Object permissions framework
+django-taggit = "^1.1"              # Generic multi-model tagging library
+django-taggit-serializer = "^0.1.7" # REST Framework serializers for Django-taggit
+APScheduler = "^3.6"                # Scheduler
+redwine = { git = "https://github.com/dotkom/redwine.git", tag = "1.3.0" }
+reportlab = "^3.5"
+pdfdocument = "^3.3"
+Unidecode = "^1.0"                  # Translates every unicode symbol to the closest ascii. online_mail_usernames
+django-markdown-deux = "^1.0"
+django-cors-headers = "^3.0"        # Enable CORS for Nibble
+django-datetime-widget = { git = "https://github.com/oleast/django-datetime-widget.git" }
+django-webpack-loader = "^0.6"      # Integration with webpack
+dj-database-url = "^0.5"            # Allows to configure databases using URLs
+python-decouple = "^3.1"            # Configuration and settings management
+django-oidc-provider = "^0.7"       # OpenID Connect Provider
+docutils = "^0.14"                  # Allows django-admindocs to generate documentation
+requests-oauthlib = "^1.2"          # Simplify OAuth2 connections to external apps
+oic = "^0.15"			            # OpenID Connect Client
+python-dateutil = "^2.8"            # Simplify date parsing
+
+# Frigg
+requests = { version = "^2.22", extras = [ "security" ] }
+# Wiki
+wiki = "^0.4"
+
+# Django 1.9 support
+sorl-thumbnail = "^12.2"
+django-appconf = "^1.0"
+
+# non-pip
+# imagemagick                   # From package repository. Tested with version == 8:6.7.7.10.
+# libjpeg-dev					# From package repository.
+# libpq-dev						# From package repository.
+
+# Monitoring
+raven = "^6.10"
+
+django-js-reverse = "^0.9"
+
+psycopg2-binary = { version = "^2.8", optional = true }
+uwsgi = { version = "^2.0", optional = true }
+redis = { version = "^3.2", optional = true }
+
+# Docs
+sphinx = { version = "^2.0", optional = true }
+sphinx-rtd-theme = { version = "^0.4", optional = true }
+
+
+[tool.poetry.dev-dependencies]
+# Testing
+pytest = "^4.5"
+pytest-cov = "^2.7"
+pytest-django = "^3.4"
+factory-boy = "^2.11"
+freezegun = "^0.3"
+mock = "^3.0"
+tox = "^3.12"
+
+# Linting
+flake8 = "^3.7"
+isort = "^4.3"
+pycodestyle = "^2.5"
+
+
+[tool.poetry.extras]
+prod = ["psycopg2-binary", "uwsgi", "redis"]
+docs = ["sphinx", "sphinx-rtd-theme"]
+
+[build-system]
+requires = ["poetry==0.12.16"]
+build-backend = "poetry.masonry.api"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = tests, flake8, isort
+skipsdist = True
+
+[testenv]
+basepython = python3
+whitelist_externals =
+    isort
+    flake8
+commands =
+    isort: isort -rc -c apps middleware scripts utils
+    flake8: flake8 apps middleware scripts utils
+
+[testenv:tests]
+whitelist_externals =
+    npm
+    py.test
+passenv =
+    DATABASE_URL
+    OAUTH2_*
+    OW4_*
+setenv =
+    DATABASE_URL = sqlite:///db.db
+    DJANGO_SETTINGS_MODULE = onlineweb4.settings
+    PYTHONPATH = {toxinidir}:{toxinidir}
+    OW4_WEBPACK_LOADER_STATS_FILE = webpack-stats-test.json
+commands =
+    npm run build:test
+    py.test --cov=apps --cov-report xml
+"""
